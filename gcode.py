@@ -56,14 +56,14 @@ while True:
                     s.write("F2000\n")
                 
                 if direction == "a":
-                    output = "G1 X-5"
+                    output = "G1 X-10"
                 elif direction == "d":
-                    output = "G1 X5"
+                    output = "G1 X10"
                 elif direction == "w":
-                    output = "G1 Y5"
+                    output = "G1 Y10"
                 elif direction == "s":
-                    output = "G1 Y-5"
-                elif direction == "q":
+                    output = "G1 Y-5\10"
+                elif direction pyth== "q":
                     break
                 print output
 
@@ -99,9 +99,16 @@ while True:
 
                 # Wait here until grbl is finished to close serial port and file.
                 #raw_input("  Press <Enter> to exit and disable grbl.")
-                time.sleep(4)
+                while 1<2:
+                    s.write("?")
+                    grbl_out = s.readline()
+                    print grbl_out
+                    if "Run" in grbl_out:
+                        time.sleep(1)
+                    else:
+                        break
 
-                # Close file and serial port
+                # Close file
                 f.close()
                 
 
