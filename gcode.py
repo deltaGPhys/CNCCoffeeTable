@@ -10,39 +10,34 @@ try:
     s = serial.Serial('/dev/ttyUSB0',115200) # cu.wchusbserial1450 GRBL operates at 115200 baud. Leave that part alone.
 except Exception as e:
     testing = True
-    
-clearings = []
+
+# import gcode files   
 shapes = []
-allshapes = []
+numclearing = len(glob.glob("clearing paths/*.gcode"))
+numshapes = len(glob.glob("shape paths/*.gcode"))
 for f in glob.glob("clearing paths/*.gcode"):
-    clearings.append(f[15:-6])
+    shapes.append(f[15:-6])
 for f in glob.glob("shape paths/*.gcode"):
     shapes.append(f[12:-6])
-allshapes = clearings + shapes
 
 while True:
     # print menu
     print "0. Manual"
     print "== Clearing Paths =="
-    n = 1
-    for f in clearings:
-        print str(n)+".",f
-        n = n + 1
+    for i in range(0,numclearing):
+        print str(i)+".",shapes[i]       
     print "== Shape Paths =="
-    for f in shapes:
-        print str(n)+".",f
-        n = n + 1
+    for i in range(numclearing,numclearing+numshapes):
+        print str(i)+".",shapes[i]
     print ""
     choice = raw_input("Your choice: ")
 
     try:
         if "," not in choice: # single path
             choices = [int(choice) - 1]
-            print choice,choices
         else: # multiple paths
             choicestemp = choice.split(",")
             choices = [int(c.strip()) for c in choicestemp]
-            print choice,choices
         
         direction = ''
         if -1 in choices: #ignore everything else
@@ -78,8 +73,11 @@ while True:
                     
         else: # not manual mode
             for choice in choices: # loop through selected patterns
-                filename = allshapes[choice]
-                print filename
+                filename = shapes[choice]
+                if choice < numclearing:
+                    filename = "clearing paths/" + filename
+                else:
+                    filename = "shape paths/" + filename                    
 
             
                 # Open g-code file
