@@ -27,11 +27,11 @@ while True:
     # print menu
     print "0. Manual"
     print "== Clearing Paths =="
-    for i in range(0,numclearing):
-        print str(i)+".",shapes[i]       
+    for i in range(1,numclearing+1):
+        print str(i)+".",shapes[i-1]       
     print "== Shape Paths =="
-    for i in range(numclearing,numclearing+numshapes):
-        print str(i)+".",shapes[i]
+    for i in range(numclearing+1,numclearing+numshapes+1):
+        print str(i)+".",shapes[i-1]
     print ""
     choice = raw_input("Your choice: ")
 
