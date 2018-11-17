@@ -107,7 +107,7 @@ while True:
 
                 # Wait here until grbl is finished to close serial port and file.
                 #raw_input("  Press <Enter> to exit and disable grbl.")
-                time.sleep(3)
+                time.sleep(20)
 
                 # Close file and serial port
                 f.close()
