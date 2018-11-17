@@ -75,6 +75,8 @@ while True:
                     
         else: # not manual mode
             for choice in choices: # loop through selected patterns
+                print choice
+                print shapes[choice]
                 filename = shapes[choice]
                 if choice < numclearing:
                     filename = "Clearing Paths/" + filename
@@ -98,14 +100,13 @@ while True:
                     print ': ' + grbl_out.strip()
 
                 # Wait here until grbl is finished to close serial port and file.
-                #raw_input("  Press <Enter> to exit and disable grbl.")
                 while 1<2:
                     s.write("?")
                     grbl_out = s.readline()
-                    print grbl_out
+        
                     if "Run" in grbl_out:
                         time.sleep(1)
-                    else:
+                    elif "Idle" in grbl_out:
                         break
 
                 # Close file
@@ -115,4 +116,6 @@ while True:
     except Exception as e:
         print "Error:", e
 
+    # Close serial port
+    s.close()
 
