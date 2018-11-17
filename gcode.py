@@ -56,13 +56,13 @@ while True:
                     s.write("F2000\n")
                 
                 if direction == "a":
-                    output = "G1 X-1"
+                    output = "G1 X-5"
                 elif direction == "d":
-                    output = "G1 X1"
+                    output = "G1 X5"
                 elif direction == "w":
-                    output = "G1 Y1"
+                    output = "G1 Y5"
                 elif direction == "s":
-                    output = "G1 Y-1"
+                    output = "G1 Y-5"
                 elif direction == "q":
                     break
                 print output
@@ -106,6 +106,6 @@ while True:
                 
 
     except Exception as e:
-        print "Invalid input:", e
+        print "Error:", e
 
 
