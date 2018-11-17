@@ -63,7 +63,7 @@ while True:
                     output = "G1 Y10"
                 elif direction == "s":
                     output = "G1 Y-5\10"
-                elif direction pyth== "q":
+                elif direction == "q":
                     break
                 print output
 
