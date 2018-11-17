@@ -10,6 +10,9 @@ try:
     s = serial.Serial('/dev/ttyUSB0',115200) # cu.wchusbserial1450 GRBL operates at 115200 baud. Leave that part alone.
 except Exception as e:
     testing = True
+    print "Not connected: testing only"
+    print
+    
 
 # import gcode files   
 shapes = []
