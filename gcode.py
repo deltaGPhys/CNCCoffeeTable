@@ -13,11 +13,11 @@ except Exception as e:
 
 # import gcode files   
 shapes = []
-numclearing = len(glob.glob("clearing paths/*.gcode"))
-numshapes = len(glob.glob("shape paths/*.gcode"))
-for f in glob.glob("clearing paths/*.gcode"):
+numclearing = len(glob.glob("Clearing Paths/*.gcode"))
+numshapes = len(glob.glob("Shape Paths/*.gcode"))
+for f in glob.glob("Clearing Paths/*.gcode"):
     shapes.append(f[15:-6])
-for f in glob.glob("shape paths/*.gcode"):
+for f in glob.glob("Shape Paths/*.gcode"):
     shapes.append(f[12:-6])
 
 while True:
@@ -75,9 +75,9 @@ while True:
             for choice in choices: # loop through selected patterns
                 filename = shapes[choice]
                 if choice < numclearing:
-                    filename = "clearing paths/" + filename
+                    filename = "Clearing Paths/" + filename
                 else:
-                    filename = "shape paths/" + filename                    
+                    filename = "Shape Paths/" + filename                    
 
             
                 # Open g-code file
