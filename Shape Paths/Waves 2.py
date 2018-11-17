@@ -81,7 +81,7 @@ print "G1 X"+str(offset)
 x = offset
 y = 0
 
-for j in range(0,M): # loop through the rows
+for j in range(0,int(2*M)): # loop through the rows
     #half arc
     x = x + ((-1)**j)*d/2
     y = y + h
@@ -91,6 +91,9 @@ for j in range(0,M): # loop through the rows
     for i in range(0,N): # loop through the arcs
         x = x + ((-1)**j)*d
         print "G"+str(g)+" X"+str(x)+" Y"+str(y)+" R"+str(sqrt(2)*h)
+    if j%2 == 0:
+        y = y - h
+        print "G1 Y"+str(y)
 
 print "G1 X0 Y0"
 
