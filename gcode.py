@@ -3,16 +3,7 @@ import time
 import glob, os
 import curses
 
-testing = False
-
-# Open grbl serial port ==> CHANGE THIS BELOW TO MATCH YOUR USB LOCATION
-try:
-    s = serial.Serial('/dev/ttyUSB0',115200) # cu.wchusbserial1450 GRBL operates at 115200 baud. Leave that part alone.
-except Exception as e:
-    testing = True
-    print "Not connected: testing only"
-    print
-    
+testing = False    
 
 # import gcode files   
 shapes = []
@@ -44,6 +35,14 @@ while True:
         
         direction = ''
         if -1 in choices: #ignore everything else
+
+            # Open grbl serial port ==> CHANGE THIS BELOW TO MATCH YOUR USB LOCATION
+            try:
+                s = serial.Serial('/dev/ttyUSB0',115200) # cu.wchusbserial1450 GRBL operates at 115200 baud. Leave that part alone.
+            except Exception as e:
+                testing = True
+                print "Not connected"
+
             while direction != "q":
                 direction = raw_input("Direction:")
 
@@ -81,6 +80,13 @@ while True:
                     filename = "Clearing Paths/" + filename
                 else:
                     filename = "Shape Paths/" + filename                    
+
+                # Open grbl serial port ==> CHANGE THIS BELOW TO MATCH YOUR USB LOCATION
+                try:
+                    s = serial.Serial('/dev/ttyUSB0',115200) # cu.wchusbserial1450 GRBL operates at 115200 baud. Leave that part alone.
+                except Exception as e:
+                    testing = True
+                    print "Not connected"
 
             
                 # Open g-code file
