@@ -75,9 +75,7 @@ while True:
                     
         else: # not manual mode
             for choice in choices: # loop through selected patterns
-                print choice
-                print shapes[choice]
-                filename = shapes[choice]
+                filename = shapes[choice-1]
                 if choice < numclearing:
                     filename = "Clearing Paths/" + filename
                 else:
@@ -116,6 +114,6 @@ while True:
     except Exception as e:
         print "Error:", e
 
-    # Close serial port
-    s.close()
+# Close serial port
+s.close()
 
