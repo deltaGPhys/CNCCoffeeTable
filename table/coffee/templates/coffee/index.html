@@ -4,28 +4,28 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
-    
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/base/jquery-ui.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    
+
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
-    
+
     <script>
         var baseUrl=document.location.href.split('/').slice(0,3).join('/')+'/';
         var patternCount = 0;
         var pkList;
         var CurrentPattern = 0;
-        
+
     function patternCounter() {
-        
+
        $.ajax({ // create an AJAX call...
                type: 'GET',
                url: baseUrl + 'countPatterns/',
@@ -34,7 +34,7 @@
                    patternCount = response['Count'];
                    pkList = response['pks'];
                    $("#patternchoice").attr('max',patternCount-1);
-                                            
+
                    CurrentPattern = pkList[0];
                                              console.log('counter complete');
                }
@@ -52,19 +52,19 @@
                    success: function(response) { // on success..
                        $("#CurrentImages").attr('src',response['Photo']);
                        $("#CurrentBlueprint").attr('src',response['Blueprint']);
-                       $("#CurrentPhoto").attr('src',response['Photo']);                         
+                       $("#CurrentPhoto").attr('src',response['Photo']);
                        $("#CurrentCardTitle").html(response['Name']);
                        $("#CurrentCardType").html("Path Type: "+response['Type']);
                        $("#CurrentCardDescription").html(response['Description']);
                        $("#CurrentCardDuration").html(response['Duration']);
-                       
+
                    }
             });
     };
 
 
     </script>
-   
+
     <title>CNCCoffee</title>
   </head>
   <body>
@@ -79,7 +79,7 @@
           <a class="dropdown-item" href="#">Something else here</a>
         </div>
       </div>
-  
+
 </div>
     <style>
 * {box-sizing: border-box;}
@@ -104,7 +104,7 @@
     display: block;
     margin-left: auto;
     margin-right: auto;
-    
+
 }
 
     </style>
@@ -115,26 +115,28 @@
             $("#patternchoice").on("input", function(){
 
                 CurrentPattern = pkList[this.value];
+                console.log('displaying id', CurrentPattern);
                 loadPattern(CurrentPattern);
+                console.log('opacity',$("#CurrentOverlay").css('opacity'));
                 });
           </script>
-    
+
     <div class="card" id="CurrentCard" style="width:100%">
-      
+
       <div class="img-comp-container center" style="width:85%">
-      
+
         <div class="img-comp-img" style="width:100%">
           <img id="CurrentBlueprint" src="" width="100%" height="200">
         </div>
-        <div class="img-comp-img img-comp-overlay" id="CurrentOverlay"mstyle="width:100%">
+        <div class="img-comp-img img-comp-overlay" id="CurrentOverlay" style="width:100%; opacity:0;">
           <img id="CurrentPhoto" src="" width="100%" height="200">
         </div>
-        
+
       </div>
         <br>
-        
+
           <input type="range" id="opacity" min="0" max="1" value="0" step=".02" style="width:85%" class="center">
-       
+
           <script>
             $("#opacity").on("input", function(){
                 $("#CurrentOverlay").css('opacity',this.value);
@@ -152,11 +154,9 @@
           console.log('ready');
 
           loadPattern(CurrentPattern);
-          
- 
- 
+
         $(document).on("click", "#BeginBtn", function () {
-            
+
            $.ajax({ // create an AJAX call...
                    data : {'id':4},
                    type: 'GET',
@@ -165,12 +165,12 @@
                    success: function(response) { // on success..
                        $("#CurrentImages").attr('src',response['Photo']);
                        $("#CurrentBlueprint").attr('src',response['Blueprint']);
-                       $("#CurrentPhoto").attr('src',response['Photo']);                         
+                       $("#CurrentPhoto").attr('src',response['Photo']);
                        $("#CurrentCardTitle").html(response['Name']);
                        $("#CurrentCardType").html("Path Type: "+response['Type']);
                        $("#CurrentCardDescription").html(response['Description']);
                        $("#CurrentCardDuration").html(response['Duration']);
-                       
+
                    }
             });
          });
@@ -179,12 +179,12 @@
 
       </script>
 
-    
+
     <br>
-    
+
     <div class="jumbotron jumbotron-fluid" id="FeedbackBox">
       <div class="container">
-        
+
         <p class="lead" id="FeedbackText"></p>
       </div>
     </div>
@@ -206,14 +206,14 @@
         <h4>Add Pattern</h4>
       </div>
       <div class="modal-body" style="padding:10px 10px;">
-
-        <form name="PatternAddForm" id="patternaddform">
+        <form data-parsley-validate method="post" name="PatternAddForm" id="patternaddform" action=""
+          enctype="multipart/form-data" data-parsley-trigger="focusout">
           {% csrf_token %}
           {{ patternaddform.as_p }}
 
       </div>
       <div class="modal-footer">
-        <button class="btn-submit" id ="AddPatternBtn" name="AddPattern">Add Pattern</button>
+        <input type="submit" class="btn-submit" id ="AddPatternBtn" name="AddPattern" value="Add Pattern" />
       </form>
       </div>
       </div>
@@ -221,25 +221,6 @@
       $(document).ready(function() {
         $(document).on("click", "#AddPatternBtn", function () {
           console.log("yup");
-         });
-
-         $('#patternaddform').submit(function(e){
-           e.preventDefault();
-
-           var formdata = $(this).serialize()
-
-           console.log(formdata);
-           $.ajax({ // create an AJAX call...
-                   data: formdata, // get the form data
-                   type: 'POST',
-                   url: baseUrl + 'addPattern/',
-                   dataType: 'json',
-                   success: function(response) { // on success..
-                       $("#FeedbackText").html(response['message']);
-                       $("#FeedbackBox").css({'background-color':'green'});
-                       $('#PatternAddModal').modal('hide'); // close this
-                   }
-            });
          });
 
        });
