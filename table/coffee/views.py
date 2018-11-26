@@ -102,7 +102,7 @@ def SendLineView(request):
     print "********"
     print line
     line = line.decode('utf8', 'replace').encode()
-    line = bytes(line, encoding="ascii")
+    line = bytes(line)
     print line
     print type(line)
 
