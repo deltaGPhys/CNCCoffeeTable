@@ -96,7 +96,7 @@ def SendLineView(request):
 
     line = request.POST.get('line')
     try:
-        s.write(str(line) + '\n') # Send g-code block to grbl
+        s.write(line.encode() + '\n') # Send g-code block to grbl
         grbl_out = s.readline() # Wait for grbl response with carriage return
         print ': ' + grbl_out.strip()
     except Exception as e:
