@@ -14,6 +14,8 @@ from datetime import datetime
 from coffee.models import *
 from coffee.forms import *
 
+import serial
+
 # Create your views here.
 def IndexView(request):
     template_name = 'coffee/index.html'
