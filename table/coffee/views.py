@@ -92,7 +92,7 @@ def SendLineView(request):
         s = serial.Serial('/dev/ttyUSB0',115200) # cu.wchusbserial1450 GRBL operates at 115200 baud. Leave that part alone.
         # Wake up grbl
         #s.write("\r\n\r\n")
-        time.sleep(2)   # Wait for grbl to initialize
+        #time.sleep(2)   # Wait for grbl to initialize
         s.flushInput()  # Flush startup text in serial input
     except Exception as e:
         print e
