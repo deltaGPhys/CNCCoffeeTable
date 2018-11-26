@@ -86,6 +86,11 @@ def SendWholeGcodeView(request):
         print e
         return HttpResponse(json.dumps({"error": "Unable to Connect"}), content_type="application/json", status=400)
 
+    for line in f:
+        l = line.strip() # Strip all EOL characters for consistency
+        print l
+        print 'Sending: ' + l,
+
     # Stream g-code to grbl
     for line in f:
         l = line.strip() # Strip all EOL characters for consistency
