@@ -110,7 +110,7 @@ def SendLineView(request):
         print e
         return HttpResponse(json.dumps({"error": "Write Error"}), content_type="application/json", status=400)
 
-    s.close()
+    #s.close()
 
     return HttpResponse(json.dumps({"message": grbl_out.strip()}), content_type="application/json", status=200)
 
