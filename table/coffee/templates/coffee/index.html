@@ -87,11 +87,11 @@
 
       }
 
-      function writeWholeGcode(id) {
+      function sendWholeGcode(id) {
         $.ajax({ // create an AJAX call...
               data : {'id':id},
               type: 'POST',
-              url: baseUrl + 'writeWholeGcode/',
+              url: baseUrl + 'sendWholeGcode/',
               dataType: 'json',
               success: function(response) { // on success..
                 console.log(response['message']);
@@ -256,7 +256,7 @@
         });
         $(document).on("click", "#WriteWholeBtn", function () {
           //open the Gcode
-          writeWholeGcode(CurrentPattern);
+          sendWholeGcode(CurrentPattern);
         });
       });
     </script>
