@@ -97,7 +97,7 @@ def SendLineView(request):
     line = request.POST.get('line')
     print "********"
     print line
-    line = line.encode('utf8', 'replace')
+    line = line.decode('utf8', 'replace')
     print line
     print type(line)
 
