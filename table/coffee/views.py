@@ -74,6 +74,7 @@ def SendWholeGcodeView(request):
     # Open g-code file
     Gcode = this_pattern.Gcode
     Gcode.open(mode='r')
+    f = ''.join(Gcode.readlines())
 
     try:
         s = serial.Serial('/dev/ttyUSB0',115200) # cu.wchusbserial1450 GRBL operates at 115200 baud. Leave that part alone.
