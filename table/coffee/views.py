@@ -71,29 +71,58 @@ def SendWholeGcodeView(request):
     except:
         return HttpResponse(json.dumps({"message": "Pattern Not Found"}), content_type="application/json", status=400)
 
-    Gcode = this_pattern.Gcode
-    Gcode.open(mode='r')
-    content = ''.join(Gcode.readlines())
-    try:
-        s = serial.Serial('/dev/ttyUSB0',115200) # cu.wchusbserial1450 GRBL operates at 115200 baud. Leave that part alone.
-        # Wake up grbl
-        s.write(bytes("\r\n\r\n"))
-        time.sleep(2)   # Wait for grbl to initialize
-        s.flushInput()  # Flush startup text in serial input
-    except Exception as e:
-        print e
-        return HttpResponse(json.dumps({"error": "Unable to Connect"}), content_type="application/json", status=400)
+    # Open g-code file
+    f = open(this_pattern.Gcode,'r');
 
+    # Wake up grbl
+    s.write("\r\n\r\n")
+    time.sleep(2)   # Wait for grbl to initialize
+    s.flushInput()  # Flush startup text in serial input
 
-    for line in content:
-        try:
-            s.write(line+bytes('\n'))
-            #s.write(line + '\n') # Send g-code block to grbl
-            grbl_out = s.readline() # Wait for grbl response with carriage return
-            print line+': ' + grbl_out.strip()
-        except Exception as e:
-            print e
-            return HttpResponse(json.dumps({"error": "Write Error"}), content_type="application/json", status=400)
+    # Stream g-code to grbl
+    for line in f:
+        l = line.strip() # Strip all EOL characters for consistency
+        print 'Sending: ' + l,
+        s.write(l + '\n') # Send g-code block to grbl
+        grbl_out = s.readline() # Wait for grbl response with carriage return
+        print ': ' + grbl_out.strip()
+
+    # Wait here until grbl is finished to close serial port and file.
+    while 1<2:
+        s.write("?")
+        grbl_out = s.readline()
+
+        if "Run" in grbl_out:
+            time.sleep(1)
+        elif "Idle" in grbl_out:
+            break
+
+    # Close file
+    f.close()
+
+    # Gcode = this_pattern.Gcode
+    # Gcode.open(mode='r')
+    # content = ''.join(Gcode.readlines())
+    # try:
+    #     s = serial.Serial('/dev/ttyUSB0',115200) # cu.wchusbserial1450 GRBL operates at 115200 baud. Leave that part alone.
+    #     # Wake up grbl
+    #     s.write(bytes("\r\n\r\n"))
+    #     time.sleep(2)   # Wait for grbl to initialize
+    #     s.flushInput()  # Flush startup text in serial input
+    # except Exception as e:
+    #     print e
+    #     return HttpResponse(json.dumps({"error": "Unable to Connect"}), content_type="application/json", status=400)
+    #
+    #
+    # for line in content:
+    #     try:
+    #         s.write(bytes(line)+bytes('\n'))
+    #         #s.write(line + '\n') # Send g-code block to grbl
+    #         grbl_out = s.readline() # Wait for grbl response with carriage return
+    #         print line+': ' + grbl_out.strip()
+    #     except Exception as e:
+    #         print e
+    #         return HttpResponse(json.dumps({"error": "Write Error"}), content_type="application/json", status=400)
 
     s.close()
 
