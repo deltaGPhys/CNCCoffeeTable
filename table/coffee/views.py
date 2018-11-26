@@ -90,7 +90,10 @@ def SendLineView(request):
     #return HttpResponse(json.dumps({"message": "sent"}), content_type="application/json", status=200)
     try:
         s = serial.Serial('/dev/ttyUSB0',115200) # cu.wchusbserial1450 GRBL operates at 115200 baud. Leave that part alone.
-    except Exception as e:
+        # Wake up grbl
+        s.write("\r\n\r\n")
+        time.sleep(.5)   # Wait for grbl to initialize
+        s.flushInput()  # Flush startup text in serial inputexcept Exception as e:
         print e
         return HttpResponse(json.dumps({"error": "Unable to Connect"}), content_type="application/json", status=400)
 
