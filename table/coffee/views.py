@@ -88,7 +88,7 @@ def SendWholeGcodeView(request):
 
     for line in f:
         l = line.strip() # Strip all EOL characters for consistency
-        print 'Sending: ' + l,
+        print 'Sending: ' + l
 
     # Stream g-code to grbl
     for line in f:
