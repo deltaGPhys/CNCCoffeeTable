@@ -75,10 +75,15 @@ def SendWholeGcodeView(request):
     Gcode = this_pattern.Gcode
     Gcode.open(mode='r')
 
-    # Wake up grbl
-    s.write("\r\n\r\n")
-    time.sleep(2)   # Wait for grbl to initialize
-    s.flushInput()  # Flush startup text in serial input
+    try:
+        s = serial.Serial('/dev/ttyUSB0',115200) # cu.wchusbserial1450 GRBL operates at 115200 baud. Leave that part alone.
+        # Wake up grbl
+        s.write(bytes("\r\n\r\n"))
+        time.sleep(2)   # Wait for grbl to initialize
+        s.flushInput()  # Flush startup text in serial input
+    except Exception as e:
+        print e
+        return HttpResponse(json.dumps({"error": "Unable to Connect"}), content_type="application/json", status=400)
 
     # Stream g-code to grbl
     for line in f:
