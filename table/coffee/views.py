@@ -108,7 +108,7 @@ def SendLineView(request):
         s.write(line+bytes('\n'))
         #s.write(line + '\n') # Send g-code block to grbl
         grbl_out = s.readline() # Wait for grbl response with carriage return
-        print ': ' + grbl_out.strip()
+        print line+': ' + grbl_out.strip()
     except Exception as e:
         print e
         return HttpResponse(json.dumps({"error": "Write Error"}), content_type="application/json", status=400)
