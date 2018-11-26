@@ -95,8 +95,9 @@ def SendLineView(request):
         return HttpResponse(json.dumps({"error": "Unable to Connect"}), content_type="application/json", status=400)
 
     line = request.POST.get('line')
+    print "********"
     print line
-    line = bytes(line.strip())
+    line = line.encode('utf8', 'replace')
     print line
     print type(line)
 
