@@ -101,7 +101,7 @@ def SendWholeGcodeView(request):
 
     # Wait here until grbl is finished to close serial port and file.
     while 1<2:
-        s.write("?")
+        s.write(bytes("?"))
         grbl_out = s.readline()
 
         if "Run" in grbl_out:
