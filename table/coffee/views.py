@@ -95,6 +95,14 @@ def SendLineView(request):
         return HttpResponse(json.dumps({"error": "Unable to Connect"}), content_type="application/json", status=400)
 
     line = request.POST.get('line')
+    print line.strip()
+    print type(line.strip())
+    print line.strip().decode()
+    print type(line.strip().decode())
+    print line.strip().encode('ascii','ignore')
+    print type(line.strip().encode('ascii','ignore'))
+
+
     try:
         s.write(line.strip().encode('raw_unicode_escape') + '\n') # Send g-code block to grbl
         grbl_out = s.readline() # Wait for grbl response with carriage return
