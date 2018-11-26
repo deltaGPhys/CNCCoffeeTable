@@ -109,9 +109,6 @@ def SendWholeGcodeView(request):
         elif "Idle" in grbl_out:
             break
 
-    # Close file
-    f.close()
-
     # Gcode = this_pattern.Gcode
     # Gcode.open(mode='r')
     # content = ''.join(Gcode.readlines())
