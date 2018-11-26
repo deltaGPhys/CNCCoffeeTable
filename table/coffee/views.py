@@ -72,7 +72,7 @@ def OpenGcodeView(request):
         return HttpResponse(json.dumps({"message": "Pattern Not Found"}), content_type="application/json", status=400)
 
     Gcode = this_pattern.Gcode
-    Gcode.open(mode='rb')
+    Gcode.open(mode='r')
     content = ''.join(Gcode.readlines())
     print content
 
