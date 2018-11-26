@@ -89,8 +89,9 @@ def SendWholeGcodeView(request):
     # Stream g-code to grbl
     for line in f:
         l = line.strip() # Strip all EOL characters for consistency
+        print l
         print 'Sending: ' + l,
-        s.write(l + '\n') # Send g-code block to grbl
+        s.write(bytes(l)+ bytes('\n')) # Send g-code block to grbl
         grbl_out = s.readline() # Wait for grbl response with carriage return
         print ': ' + grbl_out.strip()
 
