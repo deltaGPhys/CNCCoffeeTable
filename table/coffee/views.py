@@ -58,6 +58,46 @@ def IndexView(request):
 
         return redirect(reverse('coffee:index'))
 
+@csrf_exempt
+def SendWholeGcodeView(request):
+    # which pattern are we working on?
+    if request.method == 'GET':
+        id = request.GET['id'];
+    elif request.method == 'POST':
+        id = request.POST.get('id')
+
+    try:
+        this_pattern = Pattern.objects.get(pk=id)
+    except:
+        return HttpResponse(json.dumps({"message": "Pattern Not Found"}), content_type="application/json", status=400)
+
+    Gcode = this_pattern.Gcode
+    Gcode.open(mode='r')
+    content = ''.join(Gcode.readlines())
+    try:
+        s = serial.Serial('/dev/ttyUSB0',115200) # cu.wchusbserial1450 GRBL operates at 115200 baud. Leave that part alone.
+        # Wake up grbl
+        s.write(bytes("\r\n\r\n"))
+        time.sleep(2)   # Wait for grbl to initialize
+        s.flushInput()  # Flush startup text in serial input
+    except Exception as e:
+        print e
+        return HttpResponse(json.dumps({"error": "Unable to Connect"}), content_type="application/json", status=400)
+
+
+    for line in content:
+        try:
+            s.write(line+bytes('\n'))
+            #s.write(line + '\n') # Send g-code block to grbl
+            grbl_out = s.readline() # Wait for grbl response with carriage return
+            print line+': ' + grbl_out.strip()
+        except Exception as e:
+            print e
+            return HttpResponse(json.dumps({"error": "Write Error"}), content_type="application/json", status=400)
+
+    s.close()
+
+    return HttpResponse(json.dumps({"message": "Pattern Complete"}), content_type="application/json", status=200)
 
 @csrf_exempt
 def OpenGcodeView(request):

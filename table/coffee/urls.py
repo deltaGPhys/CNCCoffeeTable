@@ -28,5 +28,6 @@ urlpatterns = [
     url(r'^countPatterns/$',view=views.CountPatternsView,name='countPatterns'),
     url(r'^openGcode/$',view=views.OpenGcodeView,name='openGcode'),
     url(r'^sendLine/$',view=views.SendLineView,name='sendLine'),
+    url(r'^sendWholeGcode/$',view=views.SendWholeGcodeView,name='sendWholeGcode'),
 
     ]
