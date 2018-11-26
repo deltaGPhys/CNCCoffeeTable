@@ -93,7 +93,8 @@ def SendLineView(request):
         # Wake up grbl
         s.write("\r\n\r\n")
         time.sleep(.5)   # Wait for grbl to initialize
-        s.flushInput()  # Flush startup text in serial inputexcept Exception as e:
+        s.flushInput()  # Flush startup text in serial input
+    except Exception as e:
         print e
         return HttpResponse(json.dumps({"error": "Unable to Connect"}), content_type="application/json", status=400)
 
