@@ -103,7 +103,8 @@ def SendLineView(request):
 
 
     try:
-        s.write(line + '\n') # Send g-code block to grbl
+        s.write("G21 (mm mode)\n")
+        #s.write(line + '\n') # Send g-code block to grbl
         grbl_out = s.readline() # Wait for grbl response with carriage return
         print ': ' + grbl_out.strip()
     except Exception as e:
