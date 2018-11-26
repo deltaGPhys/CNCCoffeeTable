@@ -90,6 +90,7 @@
       function sendLine(line) {
         console.log('sending line: '+line);
         $.ajax({ // create an AJAX call...
+              async: false,
               data : {'line':line},
               type: 'POST',
               url: baseUrl + 'sendLine/',
