@@ -72,7 +72,8 @@ def SendWholeGcodeView(request):
         return HttpResponse(json.dumps({"message": "Pattern Not Found"}), content_type="application/json", status=400)
 
     # Open g-code file
-    f = open(this_pattern.Gcode,'r');
+    Gcode = this_pattern.Gcode
+    Gcode.open(mode='r')
 
     # Wake up grbl
     s.write("\r\n\r\n")
