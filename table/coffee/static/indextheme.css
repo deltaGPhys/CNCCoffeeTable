@@ -1,0 +1,25 @@
+
+* {box-sizing: border-box;}
+
+.img-comp-container {
+position: relative;
+height: 200px; /*should be the same height as the images*/
+}
+
+.img-comp-img {
+position: absolute;
+width: auto;
+height: auto;
+overflow: hidden;
+}
+
+.img-comp-img img {
+display: block;
+vertical-align: middle;
+}
+.center {
+display: block;
+margin-left: auto;
+margin-right: auto;
+
+}

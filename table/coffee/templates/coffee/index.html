@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/base/jquery-ui.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 
     <!-- Bootstrap core CSS -->
@@ -18,49 +18,144 @@
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 
+    <link rel="stylesheet" href="static/indextheme.css">
     <script>
-        var baseUrl=document.location.href.split('/').slice(0,3).join('/')+'/';
-        var patternCount = 0;
-        var pkList;
-        var CurrentPattern = 0;
+      var baseUrl=document.location.href.split('/').slice(0,3).join('/')+'/';
+      var patternCount = 0;
+      var pkList;
+      var CurrentPattern = 0;
+      var PatternTitle = "Add Pattern";
 
-    function patternCounter() {
+      function patternCounter() {
 
-       $.ajax({ // create an AJAX call...
+        $.ajax({ // create an AJAX call...
+          type: 'GET',
+          url: baseUrl + 'countPatterns/',
+          dataType: 'json',
+          success: function(response) { // on success..
+            patternCount = response['Count'];
+            pkList = response['pks'];
+            $("#patternchoice").attr('max',patternCount-1);
+
+            CurrentPattern = pkList[0];
+
+            loadPattern(CurrentPattern);
+          }
+        });
+      };
+
+      patternCounter();
+
+      function loadPattern(id) {
+        $.ajax({ // create an AJAX call...
+          data : {'id':id},
+          type: 'GET',
+          url: baseUrl + 'loadPattern/',
+          dataType: 'json',
+          success: function(response) { // on success..
+            $("#CurrentImages").attr('src',response['Photo']);
+            $("#CurrentBlueprint").attr('src',response['Blueprint']);
+            $("#CurrentPhoto").attr('src',response['Photo']);
+            $("#CurrentCardTitle").html(response['Name']);
+            $("#CurrentCardType").html("Path Type: "+response['Type']);
+            $("#CurrentCardDescription").html(response['Description']);
+            $("#CurrentCardDuration").html(response['Duration']);
+            $("#editcurrent").attr('pattern',id);
+          }
+        });
+      };
+
+      function loadPatternForm(id) {
+        $.ajax({ // create an AJAX call...
+               data : {'id':id},
                type: 'GET',
-               url: baseUrl + 'countPatterns/',
+               url: baseUrl + 'editPattern/',
                dataType: 'json',
                success: function(response) { // on success..
-                   patternCount = response['Count'];
-                   pkList = response['pks'];
-                   $("#patternchoice").attr('max',patternCount-1);
-
-                   CurrentPattern = pkList[0];
-                                             console.log('counter complete');
+                   $("#EditingForm").html(response['form']);
+                   //$("#AddPatternBtn").hide();
                }
         });
-    };
+      };
 
-    patternCounter();
 
-    function loadPattern(id) {
-           $.ajax({ // create an AJAX call...
-                   data : {'id':id},
-                   type: 'GET',
-                   url: baseUrl + 'loadPattern/',
-                   dataType: 'json',
-                   success: function(response) { // on success..
-                       $("#CurrentImages").attr('src',response['Photo']);
-                       $("#CurrentBlueprint").attr('src',response['Blueprint']);
-                       $("#CurrentPhoto").attr('src',response['Photo']);
-                       $("#CurrentCardTitle").html(response['Name']);
-                       $("#CurrentCardType").html("Path Type: "+response['Type']);
-                       $("#CurrentCardDescription").html(response['Description']);
-                       $("#CurrentCardDuration").html(response['Duration']);
 
-                   }
-            });
-    };
+      function sendGcode(lines){
+        for (i=0; i<lines.length; i++){
+          sendLine(lines[i]);
+        }
+
+      }
+
+      function sendLine(line) {
+        console.log('sending line: '+line);
+        $.ajax({ // create an AJAX call...
+              data : {'line':line},
+              type: 'POST',
+              url: baseUrl + 'sendLine/',
+              dataType: 'json',
+              success: function(response) { // on success..
+                console.log('line sent');
+                console.log(response['message']);
+              }
+        });
+      }
+
+      function loadGcode(id) {
+        lines = [];
+        //open the Gcode
+        $.ajax({ // create an AJAX call...
+               data : {'id':id},
+               type: 'GET',
+               url: baseUrl + 'openGcode/',
+               dataType: 'json',
+               success: function(response) { // on success..
+                 console.log('here it is');
+                 lines = response['Gcode'].split(/\r?\n/);
+                 //console.log(response['Gcode'].split(/\r?\n/));
+                 console.log(response['message']);
+                 //loop through the file
+                 console.log('file loaded');
+                 console.log(lines.length);
+                 sendGcode(lines);
+               }
+        });
+      }
+
+
+
+      $(document).on("click", "#editcurrent", function () {
+        var id = $("#editcurrent").attr('pattern');
+        loadPatternForm(id);
+      });
+
+      $(document).ready(function() {
+        $(document).on("submit",'#patterneditform', function(e){
+          console.log('triggered');
+          e.preventDefault();
+          var formData = new FormData($(this));
+          console.log("formData",formData);
+          console.log($(this)[0][3].files[0]);
+
+          var formdata = $(this).serialize()
+            + '&id=' + CurrentPattern
+            + '&Gcode=' + $(this)[0][3].files[0];
+
+          $.ajax({ // create an AJAX call...
+            data : formdata,
+            type: 'POST',
+            url: baseUrl + 'editPattern/',
+            dataType: 'json',
+            success: function(response) { // on success..
+              $('#PatternEditModal').modal('toggle');
+              loadPattern(CurrentPattern)
+            }
+          });
+        });
+      });
+
+      console.log('ready');
+    //loadPattern(CurrentPattern);
 
 
     </script>
@@ -75,39 +170,24 @@
         </button>
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
           <a class="dropdown-item" id="PatternAddButton" data-toggle="modal" data-target="#PatternAddModal">Add Pattern</a>
+            <script>
+              $("#PatternAddButton").click(function() {
+                // console.log('clicked');
+                // $("#EditingForm").hide();
+                // $("#AddingForm").show();
+                // $("#EditPatternBtn").hide();
+                // $("#AddPatternBtn").show();
+                // $("#PatternTitle").html("<h4>Add Pattern</h4>");
+
+              });
+            </script>
           <a class="dropdown-item" href="#">Another action</a>
           <a class="dropdown-item" href="#">Something else here</a>
         </div>
       </div>
 
 </div>
-    <style>
-* {box-sizing: border-box;}
 
-.img-comp-container {
-  position: relative;
-  height: 200px; /*should be the same height as the images*/
-}
-
-.img-comp-img {
-  position: absolute;
-  width: auto;
-  height: auto;
-  overflow: hidden;
-}
-
-.img-comp-img img {
-  display: block;
-  vertical-align: middle;
-}
-.center {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-
-}
-
-    </style>
 <br>
     <input type="range" id="patternchoice" min="0" value="0" step="1" style="width:85%" class="center">
        <br>
@@ -121,9 +201,9 @@
                 });
           </script>
 
-    <div class="card" id="CurrentCard" style="width:100%">
+    <div class="card" id="CurrentCard" style="width:100%; max-width:500px;">
 
-      <div class="img-comp-container center" style="width:85%">
+      <div class="img-comp-container center" style="width:85%; " >
 
         <div class="img-comp-img" style="width:100%">
           <img id="CurrentBlueprint" src="" width="100%" height="200">
@@ -143,6 +223,7 @@
                 });
           </script>
       <div class="card-body">
+        <a id="editcurrent" style="float:right;" pattern="" data-toggle="modal" data-target="#PatternEditModal"><i class="far fa-edit" ></i></a>
         <h5 class="card-title"><span id="CurrentCardTitle"></span></h5>
         <p class="card-text"><span id="CurrentCardType"></span></p>
         <p class="card-text"><span id="CurrentCardDescription"></span></p>
@@ -151,33 +232,12 @@
     </div>
     <script>
       $(document).ready(function() {
-          console.log('ready');
-
-          loadPattern(CurrentPattern);
-
         $(document).on("click", "#BeginBtn", function () {
-
-           $.ajax({ // create an AJAX call...
-                   data : {'id':4},
-                   type: 'GET',
-                   url: baseUrl + 'loadPattern/',
-                   dataType: 'json',
-                   success: function(response) { // on success..
-                       $("#CurrentImages").attr('src',response['Photo']);
-                       $("#CurrentBlueprint").attr('src',response['Blueprint']);
-                       $("#CurrentPhoto").attr('src',response['Photo']);
-                       $("#CurrentCardTitle").html(response['Name']);
-                       $("#CurrentCardType").html("Path Type: "+response['Type']);
-                       $("#CurrentCardDescription").html(response['Description']);
-                       $("#CurrentCardDuration").html(response['Duration']);
-
-                   }
-            });
-         });
-
-       });
-
-      </script>
+          //open the Gcode
+          loadGcode(CurrentPattern);
+        });
+      });
+    </script>
 
 
     <br>
@@ -193,43 +253,60 @@
 
 
     <!-- MODALS -->
-    <!-- Feedback add modal -->
+    <!-- Pattern add modal -->
 
     <div class="modal fade" id="PatternAddModal" role="dialog">
     <div class="modal-dialog">
 
       <!-- Modal content-->
       <div class="modal-content">
-      <div class="modal-header" style="padding:5px 10px;">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <div class="modal-header" style="padding:5px 10px;">
+          <div id="PatternTitle"><h4>Add Pattern</h4></div>
+          <button type="button" class="close" data-dismiss="modal" style="float:left;">&times;</button>
+        </div>
 
-        <h4>Add Pattern</h4>
-      </div>
-      <div class="modal-body" style="padding:10px 10px;">
-        <form data-parsley-validate method="post" name="PatternAddForm" id="patternaddform" action=""
-          enctype="multipart/form-data" data-parsley-trigger="focusout">
-          {% csrf_token %}
-          {{ patternaddform.as_p }}
+        <div class="modal-body" style="padding:10px 10px;">
+          <form data-parsley-validate method="post" name="PatternAddForm" id="patterneditform" action=""
+            enctype="multipart/form-data" data-parsley-trigger="focusout">
+            {% csrf_token %}
+            {{ patternaddform.as_p }}
+        </div>
+        <div class="modal-footer">
+          <input type="submit" class="btn-submit" id ="AddPatternBtn" name="AddPattern" value="Add Pattern" />
+        </form>
+        </div>
 
       </div>
-      <div class="modal-footer">
-        <input type="submit" class="btn-submit" id ="AddPatternBtn" name="AddPattern" value="Add Pattern" />
-      </form>
-      </div>
-      </div>
-      <script>
-      $(document).ready(function() {
-        $(document).on("click", "#AddPatternBtn", function () {
-          console.log("yup");
-         });
-
-       });
-
-      </script>
     </div>
     </div>
 
+    <!-- Pattern edit modal -->
 
+    <div class="modal fade" id="PatternEditModal" role="dialog">
+    <div class="modal-dialog">
+
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header" style="padding:5px 10px;">
+          <h4>Edit Pattern</h4>
+          <button type="button" class="close" data-dismiss="modal" style="float:left;">&times;</button>
+        </div>
+
+        <div class="modal-body" style="padding:10px 10px;">
+          <form data-parsley-validate method="post" name="PatternEditForm" id="patterneditform" action=""
+            enctype="multipart/form-data" data-parsley-trigger="focusout">
+            {% csrf_token %}
+            <div id="EditingForm"></div>
+        </div>
+        <div class="modal-footer">
+          <input type="submit" class="btn-submit" id ="EditPatternBtn" name="EditPattern" value="asdasd"/>
+        </form>
+
+        </div>
+
+      </div>
+    </div>
+    </div>
 
   </body>
 </html>
