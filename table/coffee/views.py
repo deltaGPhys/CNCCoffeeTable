@@ -102,12 +102,13 @@ def SendLineView(request):
     print "********"
     print line
     line = line.decode('utf8', 'replace').encode()
+    line = bytes(line, encoding="ascii")
     print line
     print type(line)
 
 
     try:
-        s.write("G21 (mm mode)\n")
+        s.write(line)
         #s.write(line + '\n') # Send g-code block to grbl
         grbl_out = s.readline() # Wait for grbl response with carriage return
         print ': ' + grbl_out.strip()
