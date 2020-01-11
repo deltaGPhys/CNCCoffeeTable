@@ -8,4 +8,6 @@ both patterns to clear the sand (tight sprial, horizontal strokes, vertical stro
 Designs are coded in GCODE, and the Django application serves those to the CNC controller.
 
 ## Photos
-
+<img src = "https://github.com/deltaGPhys/CNCCoffeeTable/blob/master/Shape%20Paths/spirals.jpg" width="400px">
+<img src = "https://github.com/deltaGPhys/CNCCoffeeTable/blob/master/Shape%20Paths/spiralsblue.png" width="400px">
+<img src = "https://github.com/deltaGPhys/CNCCoffeeTable/blob/master/Shape%20Paths/maze.jpg" width="400px">
