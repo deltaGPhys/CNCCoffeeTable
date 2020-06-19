@@ -1,6 +1,12 @@
 import os, pty
-from serial import Serial
-import threading
+from commands import GRBLResponse, GRBLCommand
+
+
+
+def parseCommand(command):
+    if command[:1] == "F":
+        return setFeedRate(command)
+
 
 def listener(port):
     #continuously listen to commands on the master device
