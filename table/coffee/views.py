@@ -18,7 +18,7 @@ import serial
 import time
 
 # Create your views here.
-def IndexView(request):
+def indexView(request):
     template_name = 'coffee/index.html'
 
 
@@ -59,7 +59,7 @@ def IndexView(request):
         return redirect(reverse('coffee:index'))
 
 @csrf_exempt
-def SendWholeGcodeView(request):
+def sendWholeGcodeView(request):
     # which pattern are we working on?
     if request.method == 'GET':
         id = request.GET['id'];
@@ -138,7 +138,7 @@ def SendWholeGcodeView(request):
     return HttpResponse(json.dumps({"message": "Pattern Complete"}), content_type="application/json", status=200)
 
 @csrf_exempt
-def OpenGcodeView(request):
+def openGcodeView(request):
     # which pattern are we working on?
     if request.method == 'GET':
         id = request.GET['id'];
@@ -165,7 +165,7 @@ def OpenGcodeView(request):
     return HttpResponse(json.dumps(response), content_type="application/json", status=200)
 
 @csrf_exempt
-def SendLineView(request):
+def sendLineView(request):
     #return HttpResponse(json.dumps({"message": "sent"}), content_type="application/json", status=200)
     try:
         s = serial.Serial('/dev/ttyUSB0',115200) # cu.wchusbserial1450 GRBL operates at 115200 baud. Leave that part alone.
@@ -197,7 +197,7 @@ def SendLineView(request):
 
 
 @csrf_exempt
-def AddPatternView(request):
+def addPatternView(request):
     f = PatternAddForm(request.POST,request.FILES,prefix='patternadd')
 
     if f.is_valid():
@@ -211,7 +211,7 @@ def AddPatternView(request):
         return HttpResponse(json.dumps({"message": "Pattern Error"}), content_type="application/json", status=400)
 
 @csrf_exempt
-def EditPatternView(request):
+def editPatternView(request):
     # which pattern are we working on?
     if request.method == 'GET':
         id = request.GET['id'];
@@ -252,7 +252,7 @@ def EditPatternView(request):
         return HttpResponse(json.dumps({"message": "Pattern Edit Error"}), content_type="application/json", status=400)
 
 
-def LoadPatternView(request):
+def loadPatternView(request):
     id = request.GET.get('id',None)
 
     try:
@@ -273,7 +273,7 @@ def LoadPatternView(request):
     return HttpResponse(json.dumps(response), content_type="application/json", status=200)
 
 
-def CountPatternsView(request):
+def countPatternsView(request):
 
     n = Pattern.objects.all().count()
     pks = [x.pk for x in Pattern.objects.all()]
