@@ -49,23 +49,29 @@ class GRBLCommand(Enum):
         self.longDescription = longDescription
         self.modalGroup = modalGroup
 
-class GRBLResponse(Enum):
-    OK = ("ok", "Command accepted")
-    ERROR = ("error", "Error state")
-    ALARM = ("ALARM", "ALARM - processes suspended")
-    FEEDBACK = ("[]", "Parameters or Gcode state response")
-    STATUS = ("<>", "Status report")
+class GRBLResponseType(Enum):
+    OK = ("ok", "", "Command accepted")
+    ERROR = ("error", "", "Error state")
+    ALARM = ("ALARM", "", "ALARM - processes suspended")
+    FEEDBACK = ("[", "]", "Parameters or Gcode state response")
+    STATUS = ("<", ">", "Status report")
 
-    def __init__(self, prefix, description):
+    def __init__(self, prefix, suffix, description):
         self.prefix = prefix
+        self.suffix = suffix
         self.description = description
 
+class GRBLResponse:
+    def __init__(self, responseType, message):
+        self.responseType = responseType
+        self.message = message
+
 class UnitMode(Enum):
-    MM = 0
-    IN = 0
+    MM = "MM"
+    IN = "IN"
 
 class DistanceMode(Enum):
-    ABSOLUTE = 0
-    RELATIVE = 1
+    ABSOLUTE = "absolute"
+    RELATIVE = "relative"
 
 

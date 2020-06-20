@@ -1,5 +1,5 @@
 import os, pty
-from commands import GRBLResponse, GRBLCommand, ModalGroup
+from commands import GRBLResponseType, GRBLCommand, ModalGroup
 from commands import CommandException
 from cnc_sim import CNCSim
 
