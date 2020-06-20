@@ -1,3 +1,6 @@
+from commands import CommandException, GRBLResponse
+
+
 class CNCSim:
 
     def __init__(self, maxX, maxY):
@@ -39,33 +42,39 @@ class CNCSim:
     def feedRate(self):
         return self._feedRate
 
-    @feedRate.setter
-    def feedRate(self, feedRate):
-        self._feedRate = feedRate
-
     @property
     def running(self):
         return self._running
-
-    @running.setter
-    def running(self, running):
-        self._running = running
 
     @property
     def unitMode(self):
         return self._unitMode
 
-    @unitMode.setter
-    def unitMode(self, unitMode):
-        self._unitMode = unitMode
-
     @property
     def distanceMode(self):
-        return self._unitMode
+        return self._distanceMode
 
-    @distanceMode.setter
-    def distanceMode(self, distanceMode):
+
+    def setFeedRate(self, command):
+        rate = command[1:]
+        if not rate.isnumeric():
+            self._running = False
+            raise CommandException("Rate specified is not numeric")
+        self._feedRate = rate
+        return GRBLResponse.OK
+
+    def setUnitMode(self, unitMode):
+        self._unitMode = unitMode
+        return GRBLResponse.OK
+
+    def setDistanceMode(self, distanceMode):
         self._distanceMode = distanceMode
+        return GRBLResponse.OK
+
+    def move(self, command):
+        return GRBLResponse.
+
+
 
 
 

@@ -1,5 +1,8 @@
 from enum import Enum
 
+class CommandException(Exception):
+    pass
+
 class ModalGroup(Enum):
     MOTION_MODE = 0
     COORDINATE_SYSTEM_SELECT = 1
@@ -40,8 +43,8 @@ class GRBLCommand(Enum):
                                                              "as to get up to (but not exceed) the Feed rate and the maximum acceleration limit "
                                                              "which is set in Grbl. Valid until next F command")
 
-    def __init__(self, command, description, modalGroup, longDescription):
-        self.command = command
+    def __init__(self, code, description, modalGroup, longDescription):
+        self.code = code
         self.description = description
         self.longDescription = longDescription
         self.modalGroup = modalGroup
