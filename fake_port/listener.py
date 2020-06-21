@@ -8,18 +8,15 @@ def parseCommand(command, sim):
     if command[:1] == "F":
         return sim.setFeedRate(command)
     prefix = command.split(" ")[0]
-    for comm in GRBLCommand.items():
+    for comm in GRBLCommand:
         if prefix == comm.code:
             if comm.modalGroup == ModalGroup.UNITS_MODE:
-                sim.setUnitMode = comm
-                return sim.feedback
+                return sim.setUnitMode(comm)
             elif comm.modalGroup == ModalGroup.DISTANCE_MODE:
-                sim.distanceMode = comm
-                return sim.feedback
+                return sim.setDistanceMode(comm)
             elif comm.modalGroup == ModalGroup.MOTION_MODE:
                 args = command.split(" ")[1]
-                sim.move(comm, args)
-                return sim.feedback
+                return sim.move(comm, args)
             else:
                 raise CommandException("Unimplemented command group")
     raise CommandException("Unrecognized command")
@@ -35,12 +32,14 @@ def listener(port, sim):
 
         # write back the response
         try:
-            resp = parseCommand(cmd, sim)
+            resp = parseCommand(cmd, sim).getText()
         except CommandException as e:
             resp = e.message
-        except:
-            resp = "Unexpected error state"
-        os.write(resp)
+        except Exception as e:
+            print e
+            resp = "Unexpected error state: " + e.message
+        print resp
+        os.write(port, resp + "\r\n")
 
 def create_serial():
     """Start the testing"""
@@ -48,7 +47,7 @@ def create_serial():
     s_name = os.ttyname(slave)  # translate the slave fd to a filename
     print s_name
 
-    sim = CNCSim()
+    sim = CNCSim(635, 225)
 
     listener(master, sim)
 

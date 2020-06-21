@@ -49,6 +49,20 @@ class GRBLCommand(Enum):
         self.longDescription = longDescription
         self.modalGroup = modalGroup
 
+    def getUnitMode(command):
+        if command == GRBLCommand.G20:
+            return UnitMode.IN
+        if command == GRBLCommand.G21:
+            return UnitMode.MM
+        raise CommandException("Command " + command.code)
+
+    def getDistanceMode(command):
+        if command == GRBLCommand.G90:
+            return DistanceMode.ABSOLUTE
+        if command == GRBLCommand.G91:
+            return DistanceMode.RELATIVE
+        raise CommandException("Command " + command.code)
+
 class GRBLResponseType(Enum):
     OK = ("ok", "", "Command accepted")
     ERROR = ("error", "", "Error state")
@@ -65,6 +79,9 @@ class GRBLResponse:
     def __init__(self, responseType, message):
         self.responseType = responseType
         self.message = message
+
+    def getText(self):
+        return self.responseType.prefix + ": " + self.message
 
 class UnitMode(Enum):
     MM = "MM"
