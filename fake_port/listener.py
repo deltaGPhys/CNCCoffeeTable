@@ -3,7 +3,6 @@ from commands import GRBLResponseType, GRBLCommand, ModalGroup
 from commands import CommandException
 from cnc_sim import CNCSim
 
-
 def parseCommand(command, sim):
     if command[:1] == "F":
         return sim.setFeedRate(command)

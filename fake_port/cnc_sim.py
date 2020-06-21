@@ -1,5 +1,5 @@
 from commands import CommandException, GRBLResponseType, DistanceMode, GRBLResponse
-
+from simGraphics import SimGraphics
 
 class CNCSim:
 
@@ -12,6 +12,7 @@ class CNCSim:
         self._running = True
         self._unitMode = None
         self._distanceMode = None
+        self._win = SimGraphics(maxX, maxY)
 
     @property
     def maxX(self):
@@ -53,6 +54,10 @@ class CNCSim:
     def distanceMode(self):
         return self._distanceMode
 
+    @property
+    def win(self):
+        return self._win
+
     def setFeedRate(self, command):
         rate = command[1:].strip()
         if not rate.isdigit():
@@ -74,19 +79,36 @@ class CNCSim:
 
     def move(self, command, args):
         xArg = args.split("Y")[0][1:]
-        yArg = args.split("Y")[1].strip()
+        yArg = args.split("Y")[-1].strip()
+        if yArg[0] == "X":
+            yArg = ""
         try:
-            xArg = int(xArg)
-            yArg = int(yArg)
+            if xArg != "":
+                xArg = float(xArg)
+            else:
+                xArg = None
+            if yArg != "":
+                yArg = float(yArg)
+            else:
+                yArg = None
         except Exception as e:
+            print xArg, yArg
+            print e
             return GRBLResponse(GRBLResponseType.ERROR, "Coordinates were not numeric")
 
+        oldX = self._X
+        oldY = self._Y
+
         if self.distanceMode == DistanceMode.ABSOLUTE:
-            self._X = xArg
-            self._Y = yArg
+            if xArg:
+                self._X = xArg
+            if yArg:
+                self._Y = yArg
         elif self.distanceMode == DistanceMode.RELATIVE:
-            self._X += xArg
-            self._Y += yArg
+            if xArg:
+                self._X += xArg
+            if yArg:
+                self._Y += yArg
         else:
             return GRBLResponse(GRBLResponseType.ERROR, "Distance mode not set")
 
@@ -94,7 +116,8 @@ class CNCSim:
         error = self.checkLimits()
         if error != None: return error
 
-        # need to draw here
+        # draw path
+        self._win.draw(oldX, oldY, self._X, self._Y)
 
         return GRBLResponse(GRBLResponseType.OK, "Final position: X:" + str(self._X) + ", Y:" + str(self._Y))
 

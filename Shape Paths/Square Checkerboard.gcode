@@ -1,7 +1,7 @@
 G21 (mm mode)
 G90 (absolute mode)
 F2000
-G1 X8 Y0
+G1 X8Y0
 G1 Y215
 G1 X627
 G1 Y0

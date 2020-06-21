@@ -5,15 +5,9 @@ from serial import Serial
 s_name = "/dev/ttys008"
 ser = Serial(s_name, 2400, timeout=1)
 
-commands = ["G21 (mm mode)",
-            "F2000",
-            "G90 (absolute mode)",
-            "G1 X20Y40",
-            "G91 (relative mode)",
-            "G1 X0Y40",
-            "G1 X-20Y-40",
-            "G1 X60Y0"
-            ]
+filename = '../shape paths/square checkerboard.gcode'
+commands = lines = [line.rstrip('\n') for line in open(filename)]
+
 for command in commands:
 
     ser.write(command+'\r\n')  # write the first command
