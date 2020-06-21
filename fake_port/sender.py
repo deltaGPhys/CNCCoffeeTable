@@ -10,8 +10,9 @@ commands = ["G21 (mm mode)",
             "G90 (absolute mode)",
             "G1 X20Y40",
             "G91 (relative mode)",
-            "G1 X20Y40",
-            "G1 X-20Y-40"
+            "G1 X0Y40",
+            "G1 X-20Y-40",
+            "G1 X60Y0"
             ]
 for command in commands:
 

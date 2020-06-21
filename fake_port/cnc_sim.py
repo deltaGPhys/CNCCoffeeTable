@@ -1,5 +1,5 @@
 from commands import CommandException, GRBLResponseType, DistanceMode, GRBLResponse
-
+from simGraphics import SimGraphics
 
 class CNCSim:
 
@@ -12,6 +12,7 @@ class CNCSim:
         self._running = True
         self._unitMode = None
         self._distanceMode = None
+        self._win = SimGraphics(maxX, maxY)
 
     @property
     def maxX(self):
@@ -53,6 +54,10 @@ class CNCSim:
     def distanceMode(self):
         return self._distanceMode
 
+    @property
+    def win(self):
+        return self._win
+
     def setFeedRate(self, command):
         rate = command[1:].strip()
         if not rate.isdigit():
@@ -81,6 +86,9 @@ class CNCSim:
         except Exception as e:
             return GRBLResponse(GRBLResponseType.ERROR, "Coordinates were not numeric")
 
+        oldX = self._X
+        oldY = self._Y
+
         if self.distanceMode == DistanceMode.ABSOLUTE:
             self._X = xArg
             self._Y = yArg
@@ -94,7 +102,8 @@ class CNCSim:
         error = self.checkLimits()
         if error != None: return error
 
-        # need to draw here
+        # draw path
+        self._win.draw(oldX, oldY, self._X, self._Y)
 
         return GRBLResponse(GRBLResponseType.OK, "Final position: X:" + str(self._X) + ", Y:" + str(self._Y))
 
