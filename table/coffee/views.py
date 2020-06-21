@@ -17,22 +17,22 @@ from coffee.forms import *
 import serial
 import time
 
-# Create your views here.
-def IndexView(request):
-    template_name = 'coffee/index.html'
 
+# Create your views here.
+def indexView(request):
+    template_name = 'coffee/index.html'
 
     if request.method == 'GET':
 
         patternaddform = PatternAddForm(prefix='patternadd')
 
-        context = {'patternaddform':patternaddform,}
-        return render(request,'coffee/index.html', context)
+        context = {'patternaddform': patternaddform, }
+        return render(request, 'coffee/index.html', context)
 
     elif request.method == 'POST':
         print "indexpost"
         if "AddPattern" in request.POST:
-            f = PatternAddForm(request.POST,request.FILES,prefix='patternadd')
+            f = PatternAddForm(request.POST, request.FILES, prefix='patternadd')
             if f.is_valid():
                 new_pattern = f.save()
 
@@ -58,8 +58,9 @@ def IndexView(request):
 
         return redirect(reverse('coffee:index'))
 
+
 @csrf_exempt
-def SendWholeGcodeView(request):
+def sendWholeGcodeView(request):
     # which pattern are we working on?
     if request.method == 'GET':
         id = request.GET['id'];
@@ -77,30 +78,31 @@ def SendWholeGcodeView(request):
     f = Gcode.readlines()
 
     try:
-        s = serial.Serial('/dev/ttyUSB0',115200) # cu.wchusbserial1450 GRBL operates at 115200 baud. Leave that part alone.
+        s = serial.Serial('/dev/ttyUSB0',
+                          115200)  # cu.wchusbserial1450 GRBL operates at 115200 baud. Leave that part alone.
         # Wake up grbl
         s.write(bytes("\r\n\r\n"))
-        time.sleep(2)   # Wait for grbl to initialize
+        time.sleep(2)  # Wait for grbl to initialize
         s.flushInput()  # Flush startup text in serial input
     except Exception as e:
         print e
         return HttpResponse(json.dumps({"error": "Unable to Connect"}), content_type="application/json", status=400)
 
     for line in f:
-        l = line.strip() # Strip all EOL characters for consistency
+        l = line.strip()  # Strip all EOL characters for consistency
         print 'Sending: ' + l
 
     # Stream g-code to grbl
     for line in f:
-        l = line.strip() # Strip all EOL characters for consistency
+        l = line.strip()  # Strip all EOL characters for consistency
         print l
         print 'Sending: ' + l,
-        s.write(bytes(l)+ bytes('\n')) # Send g-code block to grbl
-        grbl_out = s.readline() # Wait for grbl response with carriage return
+        s.write(bytes(l) + bytes('\n'))  # Send g-code block to grbl
+        grbl_out = s.readline()  # Wait for grbl response with carriage return
         print ': ' + grbl_out.strip()
 
     # Wait here until grbl is finished to close serial port and file.
-    while 1<2:
+    while 1 < 2:
         s.write(bytes("?"))
         grbl_out = s.readline()
 
@@ -137,8 +139,9 @@ def SendWholeGcodeView(request):
 
     return HttpResponse(json.dumps({"message": "Pattern Complete"}), content_type="application/json", status=200)
 
+
 @csrf_exempt
-def OpenGcodeView(request):
+def openGcodeView(request):
     # which pattern are we working on?
     if request.method == 'GET':
         id = request.GET['id'];
@@ -164,41 +167,42 @@ def OpenGcodeView(request):
 
     return HttpResponse(json.dumps(response), content_type="application/json", status=200)
 
+
 @csrf_exempt
-def SendLineView(request):
-    #return HttpResponse(json.dumps({"message": "sent"}), content_type="application/json", status=200)
+def sendLineView(request):
+    # return HttpResponse(json.dumps({"message": "sent"}), content_type="application/json", status=200)
     try:
-        s = serial.Serial('/dev/ttyUSB0',115200) # cu.wchusbserial1450 GRBL operates at 115200 baud. Leave that part alone.
+        s = serial.Serial('/dev/ttyUSB0',
+                          115200)  # cu.wchusbserial1450 GRBL operates at 115200 baud. Leave that part alone.
         # Wake up grbl
         s.write(bytes("\r\n\r\n"))
-        time.sleep(2)   # Wait for grbl to initialize
+        time.sleep(2)  # Wait for grbl to initialize
         s.flushInput()  # Flush startup text in serial input
     except Exception as e:
         print e
         return HttpResponse(json.dumps({"error": "Unable to Connect"}), content_type="application/json", status=400)
 
     line = request.POST.get('line')
-    #line = line.decode('utf8', 'replace').encode()
+    # line = line.decode('utf8', 'replace').encode()
     line = bytes(line)
 
-
     try:
-        s.write(line+bytes('\n'))
-        #s.write(line + '\n') # Send g-code block to grbl
-        grbl_out = s.readline() # Wait for grbl response with carriage return
-        print line+': ' + grbl_out.strip()
+        s.write(line + bytes('\n'))
+        # s.write(line + '\n') # Send g-code block to grbl
+        grbl_out = s.readline()  # Wait for grbl response with carriage return
+        print line + ': ' + grbl_out.strip()
     except Exception as e:
         print e
         return HttpResponse(json.dumps({"error": "Write Error"}), content_type="application/json", status=400)
 
-    #s.close()
+    # s.close()
 
     return HttpResponse(json.dumps({"message": grbl_out.strip()}), content_type="application/json", status=200)
 
 
 @csrf_exempt
-def AddPatternView(request):
-    f = PatternAddForm(request.POST,request.FILES,prefix='patternadd')
+def addPatternView(request):
+    f = PatternAddForm(request.POST, request.FILES, prefix='patternadd')
 
     if f.is_valid():
         new_pattern = f.save(commit=True)
@@ -210,8 +214,9 @@ def AddPatternView(request):
         print f.errors
         return HttpResponse(json.dumps({"message": "Pattern Error"}), content_type="application/json", status=400)
 
+
 @csrf_exempt
-def EditPatternView(request):
+def editPatternView(request):
     # which pattern are we working on?
     if request.method == 'GET':
         id = request.GET['id'];
@@ -225,14 +230,14 @@ def EditPatternView(request):
 
     if request.method == 'GET':
 
-        f = PatternAddForm(instance = this_pattern, prefix='patternadd')
-        return JsonResponse({'form':f.as_p()})
+        f = PatternAddForm(instance=this_pattern, prefix='patternadd')
+        return JsonResponse({'form': f.as_p()})
 
     elif request.method == 'POST':
         print request.POST.keys()
         if 'Gcode' in request.POST.keys():
             Gcode = request.POST['Gcode']
-        f = PatternAddForm(request.POST,request.FILES,instance = this_pattern,prefix='patternadd')
+        f = PatternAddForm(request.POST, request.FILES, instance=this_pattern, prefix='patternadd')
         if f.is_valid():
             f.save();
             if Gcode:
@@ -243,7 +248,6 @@ def EditPatternView(request):
                 this_pattern.save()
                 print this_pattern.Gcode
 
-
         return HttpResponse(json.dumps({"message": "Pattern Edited"}), content_type="application/json", status=200)
 
     else:
@@ -252,36 +256,35 @@ def EditPatternView(request):
         return HttpResponse(json.dumps({"message": "Pattern Edit Error"}), content_type="application/json", status=400)
 
 
-def LoadPatternView(request):
-    id = request.GET.get('id',None)
+def loadPatternView(request):
+    id = request.GET.get('id', None)
 
     try:
         pattern = Pattern.objects.get(pk=id)
     except ObjectDoesNotExist:
         return HttpResponse(json.dumps({"message": "No such pattern"}), content_type="application/json", status=200)
 
-    response = {'Name':pattern.Name,
-                'Gcode':pattern.Gcode.url,
-                'Blueprint':pattern.Blueprint.url,
-                'Photo':pattern.Photo.url,
-                'Duration':pattern.Duration.strftime("%H:%M:%S"),
-                'Description':pattern.Description,
-                'Type':pattern.Type
+    response = {'Name': pattern.Name,
+                'Gcode': pattern.Gcode.url,
+                'Blueprint': pattern.Blueprint.url,
+                'Photo': pattern.Photo.url,
+                'Duration': pattern.Duration.strftime("%H:%M:%S"),
+                'Description': pattern.Description,
+                'Type': pattern.Type
                 }
-    #print response
+    # print response
 
     return HttpResponse(json.dumps(response), content_type="application/json", status=200)
 
 
-def CountPatternsView(request):
-
+def countPatternsView(request):
     n = Pattern.objects.all().count()
     pks = [x.pk for x in Pattern.objects.all()]
-    #print n, pks
+    # print n, pks
 
-    response = {'Count':n,
-                'pks':pks
+    response = {'Count': n,
+                'pks': pks
                 }
-    #print response
+    # print response
 
     return HttpResponse(json.dumps(response), content_type="application/json", status=200)
