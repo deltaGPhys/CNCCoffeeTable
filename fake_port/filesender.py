@@ -5,7 +5,7 @@ from serial import Serial
 s_name = "/dev/ttys008"
 ser = Serial(s_name, 2400, timeout=1)
 
-filename = '../shape paths/Maze.gcode'
+filename = '../shape paths/square checkerboard.gcode'
 commands = lines = [line.rstrip('\n') for line in open(filename)]
 
 for command in commands:
