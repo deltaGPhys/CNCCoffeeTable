@@ -6,11 +6,13 @@ s_name = "/dev/ttys008"
 ser = Serial(s_name, 2400, timeout=1)
 
 filename = '../shape paths/square checkerboard.gcode'
-commands = lines = [line.rstrip('\n') for line in open(filename)]
+commands = [line.rstrip('\n') for line in open(filename)]
+
+ser.write('X\r\n')
 
 for command in commands:
 
-    ser.write(command+'\r\n')  # write the first command
+    ser.write(command+'\r\n')
     res = b""
     while not res.endswith(b'\r\n'):
         # read the response

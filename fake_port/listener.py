@@ -16,6 +16,8 @@ def parseCommand(command, sim):
             elif comm.modalGroup == ModalGroup.MOTION_MODE:
                 args = command.split(" ")[1]
                 return sim.move(comm, args)
+            elif comm.modalGroup == ModalGroup.FAKE:
+                return sim.clear()
             else:
                 raise CommandException("Unimplemented command group")
     raise CommandException("Unrecognized command")
@@ -31,13 +33,13 @@ def listener(port, sim):
 
         # write back the response
         try:
+            cmd = cmd.split("(")[0].strip()
             resp = parseCommand(cmd, sim).getText()
         except CommandException as e:
             resp = e.message
         except Exception as e:
             print e
             resp = "Unexpected error state: " + e.message
-        print resp
         os.write(port, resp + "\r\n")
 
 def create_serial():

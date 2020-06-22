@@ -3,7 +3,6 @@ from graphics import *
 class SimGraphics:
 
     def __init__(self, maxX, maxY):
-        print maxX, maxY
         self._maxX = maxX
         self._maxY = maxY
         self._statusWidth = 200
@@ -48,7 +47,19 @@ class SimGraphics:
         eye1.setFill('blue')
         eye1.draw(self._win)
 
-    def draw(self, x1, y1, x2, y2):
+    def clear(self):
+        cncBox = Rectangle(
+            Point(self._statusWidth + 3 * self._margin, self._maxY * self._scalingFactor - 1 + 1 * self._margin),
+            Point(self._maxX * self._scalingFactor + self._statusWidth - 1 + 3 * self._margin, self._margin)
+        )
+        cncBox.setOutline('gray')
+        cncBox.setFill('black')
+        cncBox.draw(self._win)
+
+    def drawLine(self, x1, y1, x2, y2):
         line = Line(Point(self._scalingFactor * x1 + self._statusWidth + self._margin * 3, self._scalingFactor * y1 + self._margin), Point(self._scalingFactor * x2 + self._statusWidth + self._margin * 3, self._scalingFactor * y2 + self._margin))
         line.setOutline('cyan')
         line.draw(self._win)
+
+    def drawArc(self):
+        pass

@@ -16,6 +16,7 @@ class ModalGroup(Enum):
     PROGRAM_MODE = 9
     SPINDLE_STATE = 10
     COOLANT_STATE = 11
+    FAKE = 12
 
 class GRBLCommand(Enum):
     G1 = ("G1", "Linear Interpolation", ModalGroup.MOTION_MODE, "Switch to linear motion at the current feed rate. "
@@ -23,6 +24,16 @@ class GRBLCommand(Enum):
                                                                 "determine the acceleration needed along each axis to "
                                                                 "ensure direct movement from the original to the destination "
                                                                 "point at no more than the current Feed rate ")
+    G2 = ("G2", "Circular interpolation, clockwise", ModalGroup.MOTION_MODE, "Switch to clockwise arc mode. The interpreter will "
+                                                                             "cut an arc or circle from the current position to the "
+                                                                             "destination using the specified radius (R) or center "
+                                                                             "(IJK location) at the current feed rate in the plane "
+                                                                             "selected by G17/18/19")
+    G3 = ("G3", "Circular interpolation, anticlockwise", ModalGroup.MOTION_MODE, "Switch to anticlockwise arc mode. The interpreter will "
+                                                                                 "cut an arc or circle from the current position to the "
+                                                                                 "destination using the specified radius (R) or center "
+                                                                                 "(IJK location) at the current feed rate in the plane "
+                                                                                 "selected by G17/18/19")
     G21 = ("G21", "Unit mode: mm", ModalGroup.UNITS_MODE, "Best practice: do this at the start of a program and nowhere else. "
                                                           "The usual minimum increment in G21 (one thousandth of a millimeter, "
                                                           ".001 mm, that is, one micrometre)")
@@ -42,6 +53,7 @@ class GRBLCommand(Enum):
                                                              "the maximum rate at which the motor can rotate when moving a given distance so "
                                                              "as to get up to (but not exceed) the Feed rate and the maximum acceleration limit "
                                                              "which is set in Grbl. Valid until next F command")
+    X = ("X", "Clear", ModalGroup.FAKE, "Fake command to clear the field and return to zero")
 
     def __init__(self, code, description, modalGroup, longDescription):
         self.code = code

@@ -58,6 +58,16 @@ class CNCSim:
     def win(self):
         return self._win
 
+    def clear(self):
+        self._win.clear()
+        self._X = 0
+        self._Y = 0
+        self._feedRate = 0
+        self._running = True
+        self._unitMode = None
+        self._distanceMode = None
+        return GRBLResponse(GRBLResponseType.OK, "Field cleared")
+
     def setFeedRate(self, command):
         rate = command[1:].strip()
         if not rate.isdigit():
@@ -92,7 +102,6 @@ class CNCSim:
             else:
                 yArg = None
         except Exception as e:
-            print xArg, yArg
             print e
             return GRBLResponse(GRBLResponseType.ERROR, "Coordinates were not numeric")
 
@@ -117,7 +126,7 @@ class CNCSim:
         if error != None: return error
 
         # draw path
-        self._win.draw(oldX, oldY, self._X, self._Y)
+        self._win.drawLine(oldX, oldY, self._X, self._Y)
 
         return GRBLResponse(GRBLResponseType.OK, "Final position: X:" + str(self._X) + ", Y:" + str(self._Y))
 

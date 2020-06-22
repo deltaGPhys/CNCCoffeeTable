@@ -5,7 +5,8 @@ from serial import Serial
 s_name = "/dev/ttys008"
 ser = Serial(s_name, 2400, timeout=1)
 
-commands = ["G21 (mm mode)",
+commands = ["X",
+            "G21 (mm mode)",
             "F2000",
             "G90 (absolute mode)",
             "G1 X20Y40",
